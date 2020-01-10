@@ -27,6 +27,8 @@ message UserRequest { int32 id = 1; }
 Corresponding peewee-backed service:
 
 ```python3
+import grpc
+from concurrent import futures
 from peewee import *
 from peeweebuf import Proto, peewee_to_proto, proto_to_dict
 
