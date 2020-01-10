@@ -46,6 +46,12 @@ class User(Model, UserService):
     @peewee_to_proto(UserProto)
     def Insert(self, request, context):
         return User.create(**proto_to_dict(request))
+
+server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+add_user_servicer(User(), server)
+
+server.add_insecure_port('[::]:50051')
+server.start()
 ```
 
 
