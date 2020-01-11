@@ -3,3 +3,5 @@
 /*.egg-info
 .DS_Store
 **/__pycache__/**
+*_pb2*
+cockroach-data

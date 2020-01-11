@@ -1,3 +1,5 @@
+from collections.abc import Generator, Iterable
+
 from google.protobuf.descriptor import FieldDescriptor as fields
 from google.protobuf.json_format import MessageToDict as proto_to_dict
 
@@ -9,7 +11,15 @@ __version__ = '0.0.1'
 PROTOBUF_FIELD_IDENTIFIER = "<class 'google.protobuf.pyext._message.FieldProperty'>"
 
 
-class TypeConversionError(Exception):
+class PeeweeBufError(Exception):
+    pass
+
+
+class TypeConversionError(PeeweeBufError):
+    pass
+
+
+class SerializationError(PeeweeBufError):
     pass
 
 
@@ -58,11 +68,22 @@ class Proto:
 
 
 def peewee_to_proto(Proto):
+    def to_proto(peewee_obj):
+        try:
+            return Proto(**peewee_obj.__dict__['__data__'])
+        except Exception as e:
+            raise SerializationError(
+                'could not convert peewee object to protocol buffer')
+
     def wrapper(function):
         def inner(*args):
             obj = function(*args)
-            print(obj)
-            return Proto(**obj.__dict__['__data__'])
+            if obj is None:
+                return obj
+
+            if isinstance(obj, (Iterable, Generator)):
+                return iter([to_proto(elem) for elem in obj])
+            return to_proto(obj)
 
         return inner
 
