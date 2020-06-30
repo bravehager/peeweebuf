@@ -8,7 +8,7 @@ The primary goal of this package is to grant strong guarantees that peewee model
 
 ## Examples
 
-gRPC serivce definition:
+gRPC service definition:
 ```proto3
 service UserService {
   rpc GetById(UserRequest) returns (User);
